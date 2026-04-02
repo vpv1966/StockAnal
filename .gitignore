@@ -1,0 +1,18 @@
+# Secrets
+.env
+token.json
+circuit_changes.json
+public/token.json
+
+# Build
+node_modules/
+build/
+dist/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+public/token.json
