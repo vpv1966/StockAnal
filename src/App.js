@@ -1098,6 +1098,7 @@ const DEFAULT_WATCHLIST=["SUNPHARMA","NTPC","TATAMOTORS","RELIANCE","CIPLA","TAT
 export default function App() {
   const [tokenData,setTokenData]   = useState(null);
   const [tokenError,setTokenError] = useState(null);
+  const [tokenDismissed,setTokenDismissed] = useState(false);
   const [scans,setScans]           = useState([]);
   const [activeIdx,setActiveIdx]   = useState(null);
   const [loading,setLoading]       = useState(false);
@@ -1156,7 +1157,7 @@ export default function App() {
   const scan = useCallback(async (rawSym) => {
     if (loadingRef.current) return;
     const sym = rawSym.toUpperCase().trim();
-    if (!tokenData){ alert("Token not loaded — run get_token.py first"); return; }
+    if (!tokenData){ console.warn("No token — live data unavailable"); return; }
     loadingRef.current=true;
     setLoading(true);
     setInputSym(sym);
@@ -1307,7 +1308,10 @@ export default function App() {
         </div>
 
         {/* Token bar */}
-        {tokenError&&<div style={{background:T.redDim,borderBottom:`1px solid ${T.red}`,padding:"4px 12px",fontSize:10,color:T.red,fontFamily:"monospace",flexShrink:0}}>⚠ {tokenError} — run <b>python scripts/get_token.py</b></div>}
+        {tokenError&&!tokenDismissed&&<div style={{background:T.redDim,borderBottom:`1px solid ${T.red}`,padding:"4px 12px",fontSize:10,color:T.red,fontFamily:"monospace",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+  <       span>⚠ No Fyers token — live prices unavailable. Forensic analysis works normally.</span>
+          <button onClick={()=>setTokenDismissed(true)} style={{background:"transparent",border:`1px solid ${T.red}`,color:T.red,borderRadius:3,padding:"1px 8px",cursor:"pointer",fontSize:10,marginLeft:12}}>Dismiss ✕</button>
+        </div>}
         {tokenData&&<div style={{background:T.bg1,borderBottom:`0.5px solid ${T.border}`,padding:"3px 12px",fontSize:9,color:T.t2,fontFamily:"monospace",display:"flex",gap:12,flexShrink:0}}>
           <span><Dot color={T.green} pulse/>Token valid · {tokenData.app_id}</span>
           <span>Generated: {new Date(tokenData.generated_at).toLocaleTimeString()}</span>
