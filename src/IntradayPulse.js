@@ -120,11 +120,6 @@ function analyzeStock(candles, price, chgPct) {
   const pctFrom52wHigh = (livePrice-high52w)/high52w*100;
   const pctFrom52wLow  = (livePrice-low52w)/low52w*100;
   let minScore = 0;
-  if (e50&&e200&&e50>e200)           minScore++;
-  if (livePrice>e150&&e150)          minScore++;
-  if (livePrice>e200)                minScore++;
-  if (pctFrom52wLow>=30)             minScore++;
-  if (pctFrom52wHigh>=-25)           minScore++;
   const e150 = calcEMA(closes,150);
   // Recalc properly
   let minerviniScore = 0;
