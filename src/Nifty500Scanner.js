@@ -685,7 +685,8 @@ export default function Nifty500Scanner({tokenData, onSelectStock}) {
     .filter(s=>filterCat==="ALL"||s.l1.category===filterCat)
     .filter(s=>(s.l2?.score??0)>=minL2)
     .filter(s=>filterStage==="ALL"
-      || (filterStage==="STAGE2"&&s.stg?.stage?.includes("STAGE2"))
+      || (filterStage==="STAGE2"&&s.stg?.stage==="STAGE2")
+      || (filterStage==="STAGE2_EARLY"&&s.stg?.stage==="STAGE2_EARLY")
       || (filterStage==="STAGE4"&&s.stg?.stage?.includes("STAGE4"))
       || (filterStage==="BOTTOM"&&s.stg?.isBottomFish)
       || (filterStage==="REDDAY"&&s.stg?.isRed))
@@ -830,19 +831,30 @@ export default function Nifty500Scanner({tokenData, onSelectStock}) {
         <div style={{display:"flex",gap:5,alignItems:"center",flexWrap:"wrap"}}>
           {/* Stage filter */}
           <span style={{fontSize:9,color:T.t3,fontFamily:"monospace"}}>STAGE:</span>
+          {/* ── High-conviction quick tabs ── */}
           {[
-            ["ALL","All"],
-            ["STAGE2","Stage 2 ▲"],
-            ["STAGE4","Stage 4 ▼"],
-            ["BOTTOM","🎣 Bottom Fish"],
-            ["REDDAY","🔴 Red Day"],
-          ].map(([k,l])=>(
+            ["ALL",        "🌐 All",           T.t2,    T.border],
+            ["STAGE2",     "★ Stage 2",         T.green, "#22c55e"],
+            ["STAGE2_EARLY","◎ Stage 2 Early",  "#86efac","#86efac"],
+            ["STAGE4",     "▼ Stage 4",         "#ef4444","#ef4444"],
+            ["BOTTOM",     "🎣 Bottom Fish",    T.amber, T.amber],
+            ["REDDAY",     "🔴 Red Day",        "#fca5a5","#fca5a5"],
+          ].map(([k,l,col,bdr])=>(
             <button key={k} onClick={()=>setFilterStage(k)}
-              style={{fontFamily:"monospace",fontSize:8,padding:"3px 8px",borderRadius:3,
-                cursor:"pointer",
-                background:filterStage===k?"#1a3a1a":T.bg3,
-                border:`0.5px solid ${filterStage===k?T.green:T.border}`,
-                color:filterStage===k?T.green:T.t2}}>{l}</button>
+              style={{fontFamily:"monospace",fontSize:9,padding:"4px 10px",borderRadius:4,
+                cursor:"pointer",fontWeight:filterStage===k?700:400,
+                background:filterStage===k?col+"22":T.bg3,
+                border:`1px solid ${filterStage===k?bdr:T.border}`,
+                color:filterStage===k?col:T.t3}}>
+              {l}
+              {k!=="ALL"&&<span style={{fontSize:7,marginLeft:4,opacity:0.7}}>
+                {k==="STAGE2"?results.filter(s=>s.stg?.stage==="STAGE2").length:
+                 k==="STAGE2_EARLY"?results.filter(s=>s.stg?.stage==="STAGE2_EARLY").length:
+                 k==="STAGE4"?results.filter(s=>s.stg?.stage?.includes("STAGE4")).length:
+                 k==="BOTTOM"?results.filter(s=>s.stg?.isBottomFish).length:
+                 k==="REDDAY"?results.filter(s=>s.stg?.isRed).length:0}
+              </span>}
+            </button>
           ))}
           <div style={{width:1,height:16,background:T.border}}/>
           {["ALL","5Y_BREAKOUT","1Y_BREAKOUT","52W_BREAKOUT","NEAR_HIGH","REVERSAL"].map(c=>(
