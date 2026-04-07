@@ -815,9 +815,9 @@ export default function Nifty500Scanner({tokenData, onSelectStock}) {
       )}
 
       {/* Actionable Block */}
-      {results.filter(s=>(s.l2?.score??0)>=4).length>0&&(
+     {filtered.filter(s=>(s.l2?.score??0)>=4).length>0&&(
         <ActionableBlock
-          stocks={results.filter(s=>(s.l2?.score??0)>=4)
+          stocks={filtered.filter(s=>(s.l2?.score??0)>=4)
             .sort((a,b)=>(b.l2?.score??0)-(a.l2?.score??0))}
           onSelectStock={onSelectStock}/>
       )}
